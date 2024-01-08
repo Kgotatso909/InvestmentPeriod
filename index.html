@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title></title>
+        <style>
+                   *{
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+               
+               background: linear-gradient(0deg); 
+               display: flex;
+               align-items: center;
+               flex-flow: wrap;
+               flex-direction: column;
+               font-size: 1rem;
+               color: #ffffff;
+               background: #273936;
+               background-repeat: no-repeat;
+               max-width: calc(100% - 10px);
+            }
+            
+            h1{
+                   font-family: Courier New;
+                   text-align: center;
+                   text-transform:uppercase;
+                   font-size: 38px;
+                   background: linear-gradient(180deg, #529303 60%, #fff 40%);
+                   background-clip: text;
+                   color: transparent;
+            }
+            
+            .container {
+                display: flex;
+                flex-direction: column;
+                padding: 10px;
+                background:#585853;
+                box-shadow: 2px 2px 3px #001;
+                border-radius: 15px;
+                margin-left: 10px;
+                width:calc(100% - 10px);
+                
+                .emphasize {
+                    font-family: Courier New;
+                }
+                
+                #formula {
+                    font-size: 25px;
+                    font-weight: 700;
+                    text-align: center;
+                }
+                
+                .discription {
+                    padding: 10px;
+                    margin: 10px 0px 10px 25px;
+                    border-left: 3px solid blue;
+                    font-size: 1.5rem;
+                    font-family:Monospace;
+                }
+                
+                .form {
+                    padding: 10px;
+                    max-width: calc(100% - 10px);
+                   
+                
+                    label {
+                      display: block;
+                      margin-left: 15px;
+                      font-family: Monospace;
+                      font-size: 18px;
+                      font-weight: 700;
+                    }
+                    
+                    input[type="text"], select{
+                        display: block;
+                        background-color: #303134;
+                        padding: 5px;
+                        margin-bottom: 15px;
+                        width: calc(100% - 10px);
+                        height: clamp(30px,45px,85px);
+                        font-size:clamp(25px,30px,80px);
+                        border: none;
+                        border-bottom:3px solid #3c4043;
+                        border-radius: 15px;
+                        outline:none;
+                        color:#fff;
+                    }
+                    
+                    input[type="text"]:focus {
+                        border:none;
+                        border-bottom:2px solid black;
+                        padding:10px;
+                        box-shadow:2px 2px 3px #001;
+                    }
+                    
+                    #calcBtn {
+                        padding: px;
+                        width: calc(100% - 10px);
+                        height: clamp(30px,45px,85px);
+                        border-radius:8px;
+                        border: none;
+                        box-shadow: inset -2px -2px 3px gray, 2px 2px 3px #001;
+                        font-weight: 600;
+                        font-family: Courier;
+                        font-size:clamp(30px,45px,85px);
+                    }
+                    
+                    #calcBtn:active {
+                        box-shadow: inset -2px -2px 3px gray, 1px 1px 1px #001;
+                   }
+                   
+                }
+               
+            }
+            #errorMessage {
+              font-family: Monospace;
+              padding: 10px;
+              border-radius: 15px;
+              text-align: center;
+              background: #fff;
+              font-size: 1rem;
+              color:red;
+            }
+            table {
+      min-width: calc(100% - 8px);
+      border-collapse: collapse;
+    }
+
+    table, th, td {
+      border: 1px solid black; no
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: center;
+    } 
+    
+    #results {
+      margin-top:25px;
+    }
+    
+        
+    
+        </style>
+    </head>
+    <body>
+        <h1>Period of Investment</h1>
+        <div class="container">
+            <div class="form">
+                <label for="futureAmount">accumulated Amount</label>
+               <input type="text" id="futureAmount">
+               <label for="initialAmount">Principal Amount</label>
+               <input type="text" id="initialAmount" />
+               <label for="interestRate">Interest Rate</label>
+               <input type="text" id="interestRate"/>
+                              <label for="type">Type of Interest</label>
+               <select id="typeRate">
+                   <option value="1">Per Annum</option>
+                   <option value="2">Bi-annually</option>
+                   <option value="4">Quarterly</option>
+                   <option value="12">Monthly</option>
+                   <option value="52">Weekly</option>
+                   <option value="365">Daily</option>
+               </select>
+               <button id="calcBtn">Calculate</button>
+            </div>
+               
+           <div id="results">
+               
+           </div>
+        </div>
+        <script>
+            document.querySelector("#calcBtn").addEventListener("click", calculatePeriod)
+
+function calculatePeriod() {
+    const initialAmount = parseFloat(document.querySelector("#initialAmount").value);
+    const futureAmount = parseFloat(document.querySelector("#futureAmount").value);
+    const interestRate = parseFloat(document.querySelector("#interestRate").value);
+    const typeRate = parseInt(document.querySelector("#typeRate").value)
+
+    if (isNaN(initialAmount) || isNaN(futureAmount) || isNaN(interestRate)) {
+        document.querySelector("#results").innerHTML = `<p id="errorMessage">Please enter a valid number</p>`;
+        return;
+    } else if(initialAmount >= futureAmount){
+        document.querySelector("#results").innerHTML = `<p id="errorMessage">Accumulated amount should be greater than Principal amount </p>`;
+        return;
+    } else if(initialAmount <= 0 || futureAmount<= 0){
+        document.querySelector("#results").innerHTML = `<p id="errorMessage">Accumulated amount or Principal amount should be positive</p>`;
+        return;
+    } else if(interestRate <= 0){
+        document.querySelector("#results").innerHTML = `<p id="errorMessage">Interest Rate should be greater than 0</p>`;
+        return;
+    } 
+    
+    const period = ((Math.log10(futureAmount / initialAmount)) / (Math.log10(1 + (interestRate / 100) / typeRate))) / typeRate;
+
+    const years = Math.floor(period);
+    const months = Math.floor((period - years) * 12);
+    
+    const totalMonths = (years*12)+months;
+    
+    const yearText = years <= 1? "Year":"Years";
+    const monthText = months <= 1? "Month":"Months";
+    
+    document.querySelector("#results").textContent = `Period: ${years} ${yearText} and ${months} ${monthText} (${totalMonths} Months)`;
+ 
+    let tableHTML = "<table>";
+    tableHTML += "<tr><th>Year</th><th>Account Value</th><th>Interest Earned</th></tr>";
+
+    let totalAmount = initialAmount;
+    for (let i = 1; i <= years; i++) {
+        const interestEarned = totalAmount * (interestRate / 100);
+        totalAmount += interestEarned;
+        tableHTML += `<tr><td>${i}</td><td>${totalAmount.toFixed(2)}</td><td>${interestEarned.toFixed(2)}</td></tr>`;
+    }
+
+    tableHTML += "</table>";
+
+    document.querySelector("#results").innerHTML += tableHTML;
+}
+
+        </script>
+    </body>
+</html>
